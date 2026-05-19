@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">MotoContable</string>
+
+    <!-- Pantalla diaria -->
+    <string name="hoy">Hoy</string>
+    <string name="semana">Esta semana</string>
+    <string name="historial">Historial</string>
+    <string name="configuracion">Configuración</string>
+    <string name="guardar">Guardar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="ida">Ida</string>
+    <string name="vuelta">Vuelta</string>
+    <string name="extras">Extras</string>
+    <string name="agregar_extra">+ Agregar extra</string>
+    <string name="total_hoy">Total hoy</string>
+    <string name="total_semana">Total semana</string>
+    <string name="soles_symbol">S/</string>
+
+    <!-- Configuración -->
+    <string name="alumno_1">Alumno 1</string>
+    <string name="alumno_2">Alumno 2</string>
+    <string name="alumno_3">Alumno 3</string>
+    <string name="alumno_4">Alumno 4</string>
+    <string name="profesor">Profesor</string>
+    <string name="precio_alumno">Precio alumno (ida/vuelta)</string>
+    <string name="precio_profesor">Precio profesor (ida/vuelta)</string>
+</resources>

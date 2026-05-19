@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Aro exterior de la rueda -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="
+            M54,16 A38,38 0 1,0 54.001,16 Z
+            M54,30 A24,24 0 1,0 54.001,30 Z"/>
+
+    <!-- Radios de la rueda -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52,30 L56,30 L56,78 L52,78 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,52 L78,52 L78,56 L30,56 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M35.5,37.5 L38.3,34.7 L72.5,68.9 L69.7,71.7 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M69.7,34.7 L72.5,37.5 L38.3,71.7 L35.5,68.9 Z"/>
+
+    <!-- Cubo central -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,46 A8,8 0 1,0 54.001,46 Z"/>
+</vector>
