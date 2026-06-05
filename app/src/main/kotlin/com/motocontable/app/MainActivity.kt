@@ -22,14 +22,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MotoContableTheme {
-                MotoContableApp()
+                AppContent()          // ← nombre distinto a la clase Application
             }
         }
     }
 }
 
 @Composable
-fun MotoContableApp() {
+fun AppContent() {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavBar(navController) }
