@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.motocontable.app.ui.screens.PantallaHoy
 
 // ── Rutas ──────────────────────────────────────────────────────────
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
@@ -37,40 +38,28 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
 }
 
 private val bottomItems = listOf(
-    Screen.Hoy, Screen.Semana, Screen.Historial, Screen.Configuracion
+    Screen.Hoy, Screen.Semana, Screen.Historial, Screen.Configuracion,
 )
 
 // ── NavGraph ───────────────────────────────────────────────────────
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Hoy.route) {
+
         composable(Screen.Hoy.route) {
-            PantallaPlaceholder(
-                icono    = Icons.Default.Today,
-                titulo   = "Registro del dia",
-                subtitulo = "Proximo: marca ida/vuelta de cada alumno y extras"
-            )
+            PantallaHoy()                                           // ← real
         }
         composable(Screen.Semana.route) {
-            PantallaPlaceholder(
-                icono    = Icons.Default.DateRange,
-                titulo   = "Resumen semanal",
-                subtitulo = "Proximo: totales por dia de la semana"
-            )
+            PantallaPlaceholder(Icons.Default.DateRange, "Resumen semanal",
+                "Proximo: totales por dia de la semana (Punto 4)")
         }
         composable(Screen.Historial.route) {
-            PantallaPlaceholder(
-                icono    = Icons.Default.History,
-                titulo   = "Historial",
-                subtitulo = "Proximo: semanas anteriores"
-            )
+            PantallaPlaceholder(Icons.Default.History, "Historial",
+                "Proximo: semanas anteriores (Punto 5)")
         }
         composable(Screen.Configuracion.route) {
-            PantallaPlaceholder(
-                icono    = Icons.Default.Settings,
-                titulo   = "Configuracion",
-                subtitulo = "Proximo: nombres y precios"
-            )
+            PantallaPlaceholder(Icons.Default.Settings, "Configuracion",
+                "Proximo: nombres y precios (Punto 5)")
         }
     }
 }
@@ -78,7 +67,7 @@ fun NavGraph(navController: NavHostController) {
 // ── Bottom Navigation Bar ──────────────────────────────────────────
 @Composable
 fun BottomNavBar(navController: NavHostController) {
-    val entrada by navController.currentBackStackEntryAsState()
+    val entrada    by navController.currentBackStackEntryAsState()
     val rutaActual = entrada?.destination?.route
 
     NavigationBar {
@@ -93,37 +82,28 @@ fun BottomNavBar(navController: NavHostController) {
                         launchSingleTop = true
                         restoreState    = true
                     }
-                }
+                },
             )
         }
     }
 }
 
-// ── Placeholder genérico ───────────────────────────────────────────
+// ── Placeholder genérico (para puntos futuros) ─────────────────────
 @Composable
-private fun PantallaPlaceholder(
-    icono: ImageVector,
-    titulo: String,
-    subtitulo: String,
-) {
+private fun PantallaPlaceholder(icono: ImageVector, titulo: String, subtitulo: String) {
     Column(
         modifier             = Modifier.fillMaxSize(),
-        verticalArrangement  = Arrangement.Center,          // ← orden correcto
-        horizontalAlignment  = Alignment.CenterHorizontally // ← orden correcto
+        verticalArrangement  = Arrangement.Center,
+        horizontalAlignment  = Alignment.CenterHorizontally,
     ) {
-        Icon(
-            imageVector        = icono,
-            contentDescription = null,
-            modifier           = Modifier.size(56.dp),
-            tint               = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-        )
+        Icon(icono, null,
+            modifier = Modifier.size(56.dp),
+            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f))
         Spacer(Modifier.height(12.dp))
         Text(titulo, style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.height(4.dp))
-        Text(
-            subtitulo,
+        Text(subtitulo,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f)
-        )
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f))
     }
 }

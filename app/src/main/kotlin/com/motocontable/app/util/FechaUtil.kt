@@ -7,8 +7,9 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 object FechaUtil {
+
     private val ISO = DateTimeFormatter.ISO_LOCAL_DATE
-    private val ES = Locale("es", "PE")
+    private val ES  = Locale("es", "PE")
 
     fun hoyISO(): String = LocalDate.now().format(ISO)
 
@@ -20,29 +21,56 @@ object FechaUtil {
         return lunes.format(ISO) to lunes.plusDays(4).format(ISO)
     }
 
+    /** "Mar 3 Jun" */
     fun formatoCorto(iso: String): String {
-        val d = LocalDate.parse(iso, ISO)
-        val dia = d.dayOfWeek.getDisplayName(TextStyle.SHORT, ES).replaceFirstChar { it.uppercase() }.trimEnd('.')
-        val mes = d.month.getDisplayName(TextStyle.SHORT, ES).replaceFirstChar { it.uppercase() }
-        return "\$dia \${d.dayOfMonth} \$mes"
+        val d   = LocalDate.parse(iso, ISO)
+        val dia = d.dayOfWeek.getDisplayName(TextStyle.SHORT, ES)
+            .replaceFirstChar { it.uppercase() }.trimEnd('.')
+        val mes = d.month.getDisplayName(TextStyle.SHORT, ES)
+            .replaceFirstChar { it.uppercase() }
+        return "$dia ${d.dayOfMonth} $mes"
     }
 
-    fun nombreDia(iso: String): String {
-        val d = LocalDate.parse(iso, ISO)
-        return d.dayOfWeek.getDisplayName(TextStyle.FULL, ES).replaceFirstChar { it.uppercase() }
-    }
+    /** "Martes", "Miércoles", … */
+    fun nombreDia(iso: String): String =
+        LocalDate.parse(iso, ISO).dayOfWeek
+            .getDisplayName(TextStyle.FULL, ES)
+            .replaceFirstChar { it.uppercase() }
 
+    /** "2 - 6 Jun 2026" */
     fun rangoLegible(offsetSemanas: Int = 0): String {
-        val lunes = luneSemana(offsetSemanas)
+        val lunes   = luneSemana(offsetSemanas)
         val viernes = lunes.plusDays(4)
-        val mes = lunes.month.getDisplayName(TextStyle.SHORT, ES).replaceFirstChar { it.uppercase() }
-        return "\${lunes.dayOfMonth} - \${viernes.dayOfMonth} \$mes \${lunes.year}"
+        val mes = lunes.month.getDisplayName(TextStyle.SHORT, ES)
+            .replaceFirstChar { it.uppercase() }
+        return "${lunes.dayOfMonth} - ${viernes.dayOfMonth} $mes ${lunes.year}"
     }
 
     fun esHoy(iso: String): Boolean = iso == hoyISO()
 
+    fun esFuturo(iso: String): Boolean =
+        LocalDate.parse(iso, ISO).isAfter(LocalDate.now())
+
     fun diasLaboralesSemana(offsetSemanas: Int = 0): List<String> {
         val lunes = luneSemana(offsetSemanas)
         return (0..4).map { lunes.plusDays(it.toLong()).format(ISO) }
+    }
+
+    /** Día laboral anterior (salta fines de semana). */
+    fun diaLaboralAnterior(iso: String): String {
+        var d = LocalDate.parse(iso, ISO).minusDays(1)
+        while (d.dayOfWeek == DayOfWeek.SATURDAY || d.dayOfWeek == DayOfWeek.SUNDAY) {
+            d = d.minusDays(1)
+        }
+        return d.format(ISO)
+    }
+
+    /** Día laboral siguiente (salta fines de semana). */
+    fun diaLaboralSiguiente(iso: String): String {
+        var d = LocalDate.parse(iso, ISO).plusDays(1)
+        while (d.dayOfWeek == DayOfWeek.SATURDAY || d.dayOfWeek == DayOfWeek.SUNDAY) {
+            d = d.plusDays(1)
+        }
+        return d.format(ISO)
     }
 }

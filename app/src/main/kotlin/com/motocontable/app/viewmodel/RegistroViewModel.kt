@@ -38,16 +38,19 @@ class RegistroViewModel @Inject constructor(
     private val _guardado = MutableStateFlow(false)
     val guardado: StateFlow<Boolean> = _guardado.asStateFlow()
 
-    init { cargarRegistro(FechaUtil.hoyISO()) }
+    init {
+        cargarRegistro(FechaUtil.hoyISO())
+    }
 
     private fun cargarRegistro(fecha: String) {
         viewModelScope.launch {
             val existente = repo.getRegistroPorFecha(fecha)
             _registro.value = existente ?: RegistroDiario(fecha = fecha)
-            _guardado.value = existente != null
+            _guardado.value  = existente != null
         }
     }
 
+    /** Actualiza un tramo en memoria. */
     fun toggleViaje(personaIdx: Int, esIda: Boolean) {
         val r = _registro.value
         _registro.value = when (personaIdx) {
@@ -60,17 +63,34 @@ class RegistroViewModel @Inject constructor(
         }
     }
 
+    /** Actualiza un tramo Y guarda inmediatamente en DB. */
+    fun toggleViajeYGuardar(personaIdx: Int, esIda: Boolean) {
+        toggleViaje(personaIdx, esIda)
+        guardarRegistro()
+    }
+
     fun guardarRegistro() {
-        viewModelScope.launch { repo.guardarRegistro(_registro.value); _guardado.value = true }
+        viewModelScope.launch {
+            repo.guardarRegistro(_registro.value)
+            _guardado.value = true
+        }
     }
 
     fun agregarExtra(descripcion: String, monto: Double) {
         if (descripcion.isBlank() || monto <= 0.0) return
-        viewModelScope.launch { repo.agregarExtra(Extra(fecha = _fecha.value, descripcion = descripcion, monto = monto)) }
+        viewModelScope.launch {
+            repo.agregarExtra(Extra(fecha = _fecha.value, descripcion = descripcion, monto = monto))
+        }
     }
 
-    fun eliminarExtra(extra: Extra) { viewModelScope.launch { repo.eliminarExtra(extra) } }
+    fun eliminarExtra(extra: Extra) {
+        viewModelScope.launch { repo.eliminarExtra(extra) }
+    }
 
-    fun setFecha(nuevaFecha: String) { _fecha.value = nuevaFecha; cargarRegistro(nuevaFecha) }
+    fun setFecha(nuevaFecha: String) {
+        _fecha.value = nuevaFecha
+        cargarRegistro(nuevaFecha)
+    }
+
     fun irAHoy() = setFecha(FechaUtil.hoyISO())
 }
