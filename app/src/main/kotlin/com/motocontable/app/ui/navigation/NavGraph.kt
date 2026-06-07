@@ -28,8 +28,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.motocontable.app.ui.screens.PantallaHoy
+import com.motocontable.app.ui.screens.PantallaSemana
 
-// ── Rutas ──────────────────────────────────────────────────────────
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Hoy           : Screen("hoy",          "Hoy",       Icons.Default.Today)
     object Semana        : Screen("semana",        "Semana",    Icons.Default.DateRange)
@@ -41,17 +41,15 @@ private val bottomItems = listOf(
     Screen.Hoy, Screen.Semana, Screen.Historial, Screen.Configuracion,
 )
 
-// ── NavGraph ───────────────────────────────────────────────────────
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Hoy.route) {
 
         composable(Screen.Hoy.route) {
-            PantallaHoy()                                           // ← real
+            PantallaHoy()
         }
         composable(Screen.Semana.route) {
-            PantallaPlaceholder(Icons.Default.DateRange, "Resumen semanal",
-                "Proximo: totales por dia de la semana (Punto 4)")
+            PantallaSemana()
         }
         composable(Screen.Historial.route) {
             PantallaPlaceholder(Icons.Default.History, "Historial",
@@ -64,7 +62,6 @@ fun NavGraph(navController: NavHostController) {
     }
 }
 
-// ── Bottom Navigation Bar ──────────────────────────────────────────
 @Composable
 fun BottomNavBar(navController: NavHostController) {
     val entrada    by navController.currentBackStackEntryAsState()
@@ -88,7 +85,6 @@ fun BottomNavBar(navController: NavHostController) {
     }
 }
 
-// ── Placeholder genérico (para puntos futuros) ─────────────────────
 @Composable
 private fun PantallaPlaceholder(icono: ImageVector, titulo: String, subtitulo: String) {
     Column(
