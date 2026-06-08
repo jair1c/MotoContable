@@ -31,15 +31,30 @@ object FechaUtil {
         return "$dia ${d.dayOfMonth} $mes"
     }
 
-    /** "Martes", "Miércoles", … */
+    /** "Lun", "Mar", ... (3 letras) */
+    fun nombreDiaCorto(iso: String): String =
+        LocalDate.parse(iso, ISO).dayOfWeek
+            .getDisplayName(TextStyle.SHORT, ES)
+            .replaceFirstChar { it.uppercase() }.trimEnd('.')
+
+    /** "Martes", "Miercoles", ... */
     fun nombreDia(iso: String): String =
         LocalDate.parse(iso, ISO).dayOfWeek
             .getDisplayName(TextStyle.FULL, ES)
             .replaceFirstChar { it.uppercase() }
 
-    /** "2 - 6 Jun 2026" */
+    /** "2 - 6 Jun 2026" usando el offset de semanas */
     fun rangoLegible(offsetSemanas: Int = 0): String {
         val lunes   = luneSemana(offsetSemanas)
+        val viernes = lunes.plusDays(4)
+        val mes = lunes.month.getDisplayName(TextStyle.SHORT, ES)
+            .replaceFirstChar { it.uppercase() }
+        return "${lunes.dayOfMonth} - ${viernes.dayOfMonth} $mes ${lunes.year}"
+    }
+
+    /** "2 - 6 Jun 2026" usando el ISO del lunes (para el historial) */
+    fun rangoLegibleDesde(lunesISO: String): String {
+        val lunes   = LocalDate.parse(lunesISO, ISO)
         val viernes = lunes.plusDays(4)
         val mes = lunes.month.getDisplayName(TextStyle.SHORT, ES)
             .replaceFirstChar { it.uppercase() }
@@ -56,21 +71,31 @@ object FechaUtil {
         return (0..4).map { lunes.plusDays(it.toLong()).format(ISO) }
     }
 
-    /** Día laboral anterior (salta fines de semana). */
+    /** Lunes de la semana a la que pertenece una fecha */
+    fun lunesDeSemana(iso: String): String =
+        LocalDate.parse(iso, ISO).with(DayOfWeek.MONDAY).format(ISO)
+
+    /** Viernes de la semana de un lunes dado */
+    fun viernesDesdeLunes(lunesISO: String): String =
+        LocalDate.parse(lunesISO, ISO).plusDays(4).format(ISO)
+
+    /** Los 5 dias laborales de la semana a la que pertenece lunesISO */
+    fun diasDeSemana(lunesISO: String): List<String> {
+        val lunes = LocalDate.parse(lunesISO, ISO)
+        return (0..4).map { lunes.plusDays(it.toLong()).format(ISO) }
+    }
+
     fun diaLaboralAnterior(iso: String): String {
         var d = LocalDate.parse(iso, ISO).minusDays(1)
-        while (d.dayOfWeek == DayOfWeek.SATURDAY || d.dayOfWeek == DayOfWeek.SUNDAY) {
+        while (d.dayOfWeek == DayOfWeek.SATURDAY || d.dayOfWeek == DayOfWeek.SUNDAY)
             d = d.minusDays(1)
-        }
         return d.format(ISO)
     }
 
-    /** Día laboral siguiente (salta fines de semana). */
     fun diaLaboralSiguiente(iso: String): String {
         var d = LocalDate.parse(iso, ISO).plusDays(1)
-        while (d.dayOfWeek == DayOfWeek.SATURDAY || d.dayOfWeek == DayOfWeek.SUNDAY) {
+        while (d.dayOfWeek == DayOfWeek.SATURDAY || d.dayOfWeek == DayOfWeek.SUNDAY)
             d = d.plusDays(1)
-        }
         return d.format(ISO)
     }
 }
