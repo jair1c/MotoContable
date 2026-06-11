@@ -24,6 +24,6 @@ Cada push a `main` genera el APK en **Actions > Artifacts**.
 ## Roadmap
 - [x] **Punto 1** — Base del proyecto (Gradle, CI, tema)
 - [x] **Punto 2** — Room DB, Repository, ViewModels, Navegacion
-- [ ] **Punto 3** — Pantalla diaria (ida/vuelta + extras)
-- [ ] **Punto 4** — Pantalla de resumen semanal
-- [ ] **Punto 5** — Historial y configuracion
+- [x] **Punto 3** — Pantalla diaria (ida/vuelta + extras)
+- [x] **Punto 4** — Pantalla de resumen semanal
+- [x] **Punto 5** — Historial y configuracion
