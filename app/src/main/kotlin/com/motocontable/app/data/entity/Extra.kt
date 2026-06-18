@@ -8,5 +8,6 @@ data class Extra(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val fecha: String,
     val descripcion: String,
-    val monto: Double
+    val monto: Double,
+    val pagado: Boolean = false,   // true = ya cobrado
 )
