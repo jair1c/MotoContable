@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 interface PagoSemanaDao {
     @Query("SELECT * FROM pagos_semana WHERE semanaISO = :semanaISO")
     fun observarPorSemana(semanaISO: String): Flow<List<PagoSemana>>
+    
+    @Query("SELECT * FROM pagos_semana ORDER BY semanaISO DESC")
+    fun observarTodos(): Flow<List<PagoSemana>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun guardar(pago: PagoSemana)

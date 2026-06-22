@@ -38,6 +38,10 @@ class RegistroRepository @Inject constructor(
     // ── Pagos por persona ─────────────────────────────────────────
     fun observarPagosSemana(semanaISO: String): Flow<List<PagoSemana>> =
         pagoSemanaDao.observarPorSemana(semanaISO)
+    
+    fun observarTodosPagos(): Flow<List<PagoSemana>> =
+        pagoSemanaDao.observarTodos()  // NUEVO: para historial
+    
     suspend fun guardarPago(pago: PagoSemana) = pagoSemanaDao.guardar(pago)
     suspend fun eliminarPago(semanaISO: String, personaIdx: Int) =
         pagoSemanaDao.eliminar(semanaISO, personaIdx)
@@ -45,5 +49,9 @@ class RegistroRepository @Inject constructor(
     // ── Gastos semanales ──────────────────────────────────────────
     fun observarGastoSemana(semanaISO: String): Flow<GastoSemana?> =
         gastoSemanaDao.observar(semanaISO)
+    
+    fun observarTodosGastos(): Flow<List<GastoSemana>> =
+        gastoSemanaDao.observarTodos()  // NUEVO: para historial
+    
     suspend fun guardarGasto(gasto: GastoSemana) = gastoSemanaDao.guardar(gasto)
 }

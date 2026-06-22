@@ -37,6 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.motocontable.app.data.entity.Configuracion
 import com.motocontable.app.data.entity.Extra
+import com.motocontable.app.data.entity.GastoSemana
+import com.motocontable.app.data.entity.PagoSemana
 import com.motocontable.app.data.entity.RegistroDiario
 import com.motocontable.app.util.FechaUtil
 import com.motocontable.app.util.formatoSoles
@@ -158,6 +160,22 @@ private fun CardSemanaHistorial(
                     registro = registro,
                     extras   = extDia,
                     config   = config,
+                )
+            }
+
+            // ── NUEVO: Balance neto de la semana ───────────────────
+            if (semana.totalCobrado > 0.0 || semana.gasto != null || semana.gananciaNeta != semana.total) {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+                    modifier = Modifier.padding(vertical = 4.dp),
+                )
+                
+                FilaBalanceHistorico(
+                    totalGenerado = semana.total,
+                    totalCobrado = semana.totalCobrado,
+                    totalPendiente = semana.totalPendiente,
+                    gasolina = semana.gasto?.gasolina ?: 0.0,
+                    gananciaNeta = semana.gananciaNeta,
                 )
             }
         }
@@ -316,6 +334,123 @@ private fun MiniIndicadorPersona(ida: Boolean, vuelta: Boolean, nombre: String) 
                     fontWeight = if (vuelta) FontWeight.Bold else FontWeight.Normal,
                 )
             }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Resumen de balance en historial (Punto 6b)
+// ═══════════════════════════════════════════════════════════════════
+@Composable
+private fun FilaBalanceHistorico(
+    totalGenerado: Double,
+    totalCobrado: Double,
+    totalPendiente: Double,
+    gasolina: Double,
+    gananciaNeta: Double,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        // Total generado
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                "Generado",
+                fontSize = 11.sp,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+            )
+            Text(
+                totalGenerado.formatoSoles(),
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+        }
+
+        // Total cobrado (si hay)
+        if (totalCobrado > 0.0) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    "Cobrado",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+                Text(
+                    totalCobrado.formatoSoles(),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+            }
+        }
+
+        // Total pendiente (si hay)
+        if (totalPendiente > 0.0) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    "Pendiente",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.error,
+                )
+                Text(
+                    totalPendiente.formatoSoles(),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+        }
+
+        // Gasolina (si hay)
+        if (gasolina > 0.0) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    "Gasolina",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                )
+                Text(
+                    gasolina.formatoSoles(),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                )
+            }
+        }
+
+        // Ganancia neta (siempre mostrar)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                "Ganancia Neta",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+            Text(
+                gananciaNeta.formatoSoles(),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (gananciaNeta >= 0)
+                    MaterialTheme.colorScheme.secondary
+                else
+                    MaterialTheme.colorScheme.error,
+            )
         }
     }
 }
