@@ -6,6 +6,15 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// LEER CREDENCIALES DE local.properties
+// ═══════════════════════════════════════════════════════════════════
+val keystoreProperties = java.util.Properties()
+val keystoreFile = rootProject.file("local.properties")
+if (keystoreFile.exists()) {
+    keystoreFile.inputStream().use { keystoreProperties.load(it) }
+}
+
 android {
     namespace   = "com.motocontable.app"
     compileSdk  = 35
@@ -18,13 +27,30 @@ android {
         versionName   = "1.0.0"
     }
 
+    // ═══════════════════════════════════════════════════════════════════
+    // CONFIGURACIÓN DE FIRMA (KEYSTORE)
+    // ═══════════════════════════════════════════════════════════════════
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
+            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD").toCharArray()
+            storeFile = file(keystoreProperties.getProperty("KEYSTORE_PATH"))
+            storePassword = keystoreProperties.getProperty("KEYSTORE_PASSWORD").toCharArray()
+        }
+    }
+
     buildTypes {
+        debug {
+            // Debug también firmado (para que sea consistente)
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

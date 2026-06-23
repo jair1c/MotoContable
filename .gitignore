@@ -11,5 +11,17 @@ captures/
 *.apk
 *.aab
 
+# Keystore y credenciales (NUNCA COMMITEAR)
+*.jks
+*.keystore
+*.p12
+keystore
+motocontable.jks
+
+# local.properties contiene contraseña del keystore
+# YA ESTÁ EXCLUIDO ARRIBA, pero lo aclaramos
+local.properties
+
 # Keeps gradle wrapper JAR (necesario para CI)
 !gradle/wrapper/gradle-wrapper.jar
+
