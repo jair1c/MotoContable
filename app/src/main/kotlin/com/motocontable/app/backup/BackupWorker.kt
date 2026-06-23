@@ -5,6 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.motocontable.app.data.repository.RegistroRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -78,5 +79,3 @@ class BackupWorker(
         }
     }
 }
-
-import androidx.work.WorkerParameters
