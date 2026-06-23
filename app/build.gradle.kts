@@ -6,10 +6,13 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+import java.util.Properties
+import java.io.File
+
 // ═══════════════════════════════════════════════════════════════════
 // LEER CREDENCIALES DE local.properties
 // ═══════════════════════════════════════════════════════════════════
-val keystoreProperties = java.util.Properties()
+val keystoreProperties = Properties()
 val keystoreFile = rootProject.file("local.properties")
 if (keystoreFile.exists()) {
     keystoreFile.inputStream().use { keystoreProperties.load(it) }
