@@ -31,21 +31,26 @@ android {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // CONFIGURACIÓN DE FIRMA (KEYSTORE)
+    // CONFIGURACIÓN DE FIRMA (KEYSTORE) - OPCIONAL
     // ═══════════════════════════════════════════════════════════════════
     signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
-            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
-            storeFile = file(keystoreProperties.getProperty("KEYSTORE_PATH"))
-            storePassword = keystoreProperties.getProperty("KEYSTORE_PASSWORD")
+        // Solo crear la configuración si existen las propiedades necesarias
+        if (keystoreProperties.containsKey("KEYSTORE_PATH")) {
+            create("release") {
+                keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
+                keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
+                storeFile = file(keystoreProperties.getProperty("KEYSTORE_PATH"))
+                storePassword = keystoreProperties.getProperty("KEYSTORE_PASSWORD")
+            }
         }
     }
 
     buildTypes {
         debug {
-            // Debug también firmado (para que sea consistente)
-            signingConfig = signingConfigs.getByName("debug")
+            // Debug sin firma en CI/CD (solo localmente si está disponible)
+            if (signingConfigs.findByName("debug") != null) {
+                signingConfig = signingConfigs.getByName("debug")
+            }
         }
         release {
             isMinifyEnabled = true
@@ -53,7 +58,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            // Solo usar release signing si existe la configuración
+            if (signingConfigs.findByName("release") != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
